@@ -13,7 +13,7 @@ class LeNet(nn.Module):
         # Input is 3 channels image and output has 6 channels
         # and convolution kernal size is 5*5 square kernel
         self.conv1 = nn.Conv2d(3, 6, 5)
-        # Second convolution is also square kernel(5*5) and has 16 layers
+        # Second convolution is also square kernel(5*5) and has 16 channels
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1   = nn.Linear(16*5*5, 120)
         self.fc2   = nn.Linear(120, 84)
