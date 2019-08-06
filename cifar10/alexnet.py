@@ -5,12 +5,13 @@ AlexNet Paper (http://papers.nips.cc/paper/4824-imagenet-classification-with-dee
 The model is adopted to use mu ch smaller number of parameters to adopt to 10 way classification and the size of th
 dataset. Using AlexNet as it is will cause heavy over-fitting.
 '''
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class AlexNet(nn.Module):
+class AlexLikeNet(nn.Module):
     def __init__(self):
-        super(AlexNet, self).__init__()
+        super(AlexLikeNet, self).__init__()
         # Input(224)-> Conv(48 channel) -> MaxPool -> Conv(128 Channel) -> MaxPool -> Conv(192 Channel) ->
         # Conv(192 Channel) -> Conv(128 Channel) -> FC(2048) -> FC(2048) -> FC(1000)
         # CIFAR-10 Input is 3 channel 32 X 32 network and output is 10 way classifier. Here is the scaled down version
@@ -39,3 +40,42 @@ class AlexNet(nn.Module):
         out = F.relu(self.fc2(out))
         out = self.fc3(out)
         return out
+
+
+class AlexNet(nn.Module):
+    def __init__(self, num_classes=10):
+        super(AlexNet, self).__init__()
+        # Original AlexNext model as it is without any modification
+        # The input size is different for CIFAR-10(32*32) as opposed to 224*224(ImageNet)
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=11, stride=2, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+            nn.Conv2d(64, 192, kernel_size=5, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+        )
+        self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
+        self.classifier = nn.Sequential(
+            nn.Dropout(),
+            nn.Linear(256 * 6 * 6, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes),
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.classifier(x)
+        return x
