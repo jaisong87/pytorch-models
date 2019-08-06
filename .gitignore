@@ -1,0 +1,5 @@
+*.pyc
+cifar10/benchmarks/.ipynb_checkpoints/
+cifar10/benchmarks/data/
+.idea/
+Learning/
