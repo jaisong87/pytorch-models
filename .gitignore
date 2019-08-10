@@ -3,3 +3,9 @@ cifar10/benchmarks/.ipynb_checkpoints/
 cifar10/benchmarks/data/
 .idea/
 Learning/
+DataMiningAssignments/
+*.pt
+*.swp
+*.swo
+*.ipynb_checkpoints
+*.DS_Store
