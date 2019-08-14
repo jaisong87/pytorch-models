@@ -9,3 +9,5 @@ DataMiningAssignments/
 *.swo
 *.ipynb_checkpoints
 *.DS_Store
+BootStrapKaggle/Titanic/gender_submission.csv
+BootStrapKaggle/Titanic/preds.txt
